@@ -20,15 +20,9 @@ hidden_layers = [layer_1,layer_2,layer_3]
 
 output = [[0.7,0.4,0.3,0.15], [2,3,1,4], [-3,-5,6,2]] # 4 output for simplicity for now
 
-print("hidden layer",hidden_layers)
-
-network = hidden_layers
-
-print("network before",network)
-network.append(output)  # network[layer][activation/weight/bias][index]
-
-print("network after",network)
-print(network[0][0][1])
+# network[layer][activation/weight/bias][index]
+network = hidden_layers     # network = (input) -> hidden layers -> (output)
+network.append(output)      # network = (input) -> hidden layers -> output
 
 # create 2d array
 
@@ -41,17 +35,6 @@ for i in range(28):
         array.append(pixel)
         array_2d[i].append(pixel)
 
-'''
-for i in range(28):
-    print(array_2d[i])
-'''
-
-'''
-print("\n")
-print(array)
-print(array_2d)
-'''
-
 #invert grayscale value
 
 for i in range(784):
@@ -60,17 +43,37 @@ for i in range(784):
     array[i] = int(array[i] + 127.5)
     array[i] = array[i] * (1/255)           # change value from 0 to 255, to between 0 and 1
 
-print(array)
+network.insert(0,array)                     # network = input -> hidden layers -> output
 
-network.insert(0,array)
+network[0] = [network[0],[],[]]             # make it have the same format as other layers
 
 def sigmoid(x):
-    x = 1/(1+((math.e)**(-x)))
+    x = float(1/(1+((math.e)**(-x))))
     return x
 
-sum = 0
-for i in array:
-    sum = sum + i
+def sigma(array):
+    x = 0
+    for i in array:
+        x = x + i
+    return x
 
-print(sum)
-print(network)
+print(network[1][0])
+print(network[2][0])
+print(network[3][0])
+print(network[4][0])
+
+def calculate_network(network):
+    for i in range(1,len(network)):
+        x = sigma(network[i-1][0])
+        for j in range(0,len(network[i][0])-1):     #bug
+            network[i][0][j] = sigmoid(network[i][1][j] * float(x) + float(network[i][2][j]))
+    output_layer = len(network) - 1
+    return network[output_layer][0]
+
+calculate_network(network)
+
+print()
+print(network[1][0])
+print(network[2][0])
+print(network[3][0])
+print(network[4][0])
