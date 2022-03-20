@@ -48,7 +48,10 @@ network.insert(0,array)                     # network = input -> hidden layers -
 network[0] = [network[0],[],[]]             # make it have the same format as other layers
 
 def sigmoid(x):
-    x = float(1/(1+((math.e)**(-x))))
+    if x <= -40:
+        x = 0
+    else:
+        x = float(1/(1+((math.e)**(-x))))
     return x
 
 def sigma(array):
@@ -57,23 +60,12 @@ def sigma(array):
         x = x + i
     return x
 
-print(network[1][0])
-print(network[2][0])
-print(network[3][0])
-print(network[4][0])
-
 def calculate_network(network):
     for i in range(1,len(network)):
         x = sigma(network[i-1][0])
-        for j in range(0,len(network[i][0])-1):     #bug
-            network[i][0][j] = sigmoid(network[i][1][j] * float(x) + float(network[i][2][j]))
+        for j in range(0,len(network[i][0])):
+            network[i][0][j] = sigmoid((network[i][1][j] * float(x) + float(network[i][2][j])))
     output_layer = len(network) - 1
     return network[output_layer][0]
 
-calculate_network(network)
-
-print()
-print(network[1][0])
-print(network[2][0])
-print(network[3][0])
-print(network[4][0])
+print(calculate_network(network))
